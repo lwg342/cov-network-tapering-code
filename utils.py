@@ -1,4 +1,4 @@
-# %% 
+# %%
 import numpy as np
 from scipy import linalg as LA
 from wlpy.covariance import Covariance
@@ -15,63 +15,51 @@ def matrix_elementwise_multiplication(mat1, mat2):
     """
     if mat1.shape != mat2.shape:
         raise ValueError("Matrices are not of the same dimensions!")
-
     result_matrix = np.multiply(mat1, mat2)
-
     return result_matrix
 
-class TaperingCovariance(Covariance):
-    def __init__(self, sample, observed_distance_matrix=None):
-        super().__init__(DF_TxN=sample)
 
-        if observed_distance_matrix == None:
-            raise ValueError("Please provide the observed distance matrix")
-        elif observed_distance_matrix.shape != (self.N, self.N):
-            raise ValueError(
-                "The shape of the observed distance matrix is not correct. ")
-        else:
-            self.distance_matrix = observed_distance_matrix
-
-def linear_tapering(eval, bandwidth):
-    return np.clip(2 - 2*np.abs(eval)/bandwidth, 0, 1)
-
-def banding_weights(eval, bandwidth):
-    return np.where(np.abs(eval) <= bandwidth, 0, 1)
-
-def construct_tapering_weights(distance_matrix, bandwidth, tapering_function =linear_tapering):
-    return tapering_function(distance_matrix, bandwidth)
-
-
-def cov_tapering(cov, distance_matrix, bandwidth, function=linear_tapering):
+def tapering_weights(distance_matrix, bandwidth, method="linear"):
     """
-    This function performs tapering of the covariance matrix using a distance matrix and a bandwidth.
-    :param cov: A covariance matrix (2D array)
-    :param distance_matrix: A distance matrix (2D array)
-    :param bandwidth: A bandwidth (float)
-    :param function: A tapering function (function)
-    :return: A covariance matrix (2D array) which is the result of tapering.
+    Construct the tapering weights based on distance d and bandwidth K. 
+
+    Methods: 
+    "linear" : 
+        1 if |d| <= K/2, 
+        2 - 2*|d|/K, if K/2 < |d| <= K, 
+        0 otherwise 
+    "banding" : 
+        1 if |d| <= K, 0 otherwise
     """
-    tapering_weights = construct_tapering_weights(
-        distance_matrix, bandwidth, function)
-    return matrix_elementwise_multiplication(cov, tapering_weights)
+    if method == "linear":
+        return np.clip(2 - 2*np.abs(distance_matrix)/bandwidth, 0, 1)
+    elif method == "banding":
+        return np.where(np.abs(distance_matrix) <= bandwidth, 1, 0)
+    else:
+        raise NotImplementedError(
+            "Available methods are 'linear' and 'banding'.")
 
 
+def cov_tapering(sample_cov, distance_matrix, bandwidth, method="linear"):
+    return matrix_elementwise_multiplication(sample_cov, tapering_weights(distance_matrix, bandwidth, method))
 
 
-
-
-# %% 
+# %%
 def replace_diagonal(matrix, value):
     np.fill_diagonal(matrix, value)
     return matrix
 
+
 def generate_true_cov_cai2010(distance_matrix, rho, alpha):
-    pseudo_distance_matrix = replace_diagonal(distance_matrix, 1)
-    true_cov = rho*(pseudo_distance_matrix**(- alpha - 1)) 
+    pseudo_distance_matrix = replace_diagonal(
+        distance_matrix, 1)  # To avoid division by zero
+    true_cov = rho*(pseudo_distance_matrix**(- alpha - 1))
     true_cov = replace_diagonal(true_cov, 1)
     return true_cov
 
 # %%
+
+
 def generate_poisson_discrete_random_variables(n, lambd=1):
     """
     This function generates a matrix of size n*n with Poisson discrete random variables having a mean of 0.
@@ -80,7 +68,8 @@ def generate_poisson_discrete_random_variables(n, lambd=1):
     :return: A matrix (2D array) of size n*n with Poisson discrete random variables having a mean of 0.
     """
     return np.random.poisson(lam=lambd, size=(n, n)) - lambd*np.ones((n, n))
-# %% 
+# %%
+
 
 def multivariate_t_rvs(mean, true_cov, sample_size, df):
     '''generate random variables of multivariate t distribution
@@ -111,15 +100,10 @@ def multivariate_t_rvs(mean, true_cov, sample_size, df):
     # same output format as random.multivariate_normal
     return mean + z/np.sqrt(x)[:, None]
 
+
 def generate_normal_samples(true_cov, n, p):
-    """
-    This function generates n random samples of normal distributed random variables of dimension p,
-    with true_cov as the covariance matrix.
-    :param true_cov: A p*p matrix (2D array) representing the true covariance matrix.
-    :param n: An integer representing the number of random samples to generate.
-    :param p: An integer representing the dimension of the normal distributed random variables.
-    :return: A n*p matrix (2D array) representing the generated random samples.
-    """
     mean = np.zeros(p)
     samples = np.random.multivariate_normal(mean, true_cov, size=n)
     return samples
+
+# %%
