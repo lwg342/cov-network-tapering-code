@@ -1,0 +1,3 @@
+[submodule "wlpy"]
+	path = wlpy
+	url = git@github.com:lwg342/wlpy.git
