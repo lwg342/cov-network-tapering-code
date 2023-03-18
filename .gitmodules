@@ -1,3 +1,6 @@
 [submodule "wlpy"]
 	path = wlpy
 	url = git@github.com:lwg342/wlpy.git
+[submodule "POET"]
+	path = POET
+	url = https://github.com/dizhouwu/POET.git

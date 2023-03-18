@@ -1,6 +1,7 @@
 # %%
 import numpy as np
 from scipy import linalg as LA
+from scipy.stats import t
 from wlpy.covariance import Covariance
 from wlpy.gist import heatmap
 # %%
@@ -68,6 +69,20 @@ def generate_poisson_discrete_random_variables(n, lambd=1):
     :return: A matrix (2D array) of size n*n with Poisson discrete random variables having a mean of 0.
     """
     return np.random.poisson(lam=lambd, size=(n, n)) - lambd*np.ones((n, n))
+
+
+def generate_rounded_t_matrix(p, df):
+    """
+    Generate a p by p matrix of t-distributed random variables
+    that are rounded to integer values.
+
+    :param p: int, the number of rows and columns of the matrix
+    :param df: float, the degrees of freedom parameter for the t-distribution
+    :return: numpy.ndarray, the generated matrix of rounded t-distributed random variables
+    """
+    t_matrix = t.rvs(df=df, size=(p, p))
+    rounded_t_matrix = np.round(t_matrix).astype(int)
+    return rounded_t_matrix
 # %%
 
 
