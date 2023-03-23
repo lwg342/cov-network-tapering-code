@@ -2,8 +2,6 @@
 import numpy as np
 from scipy import linalg as LA
 from scipy.stats import t
-from wlpy.covariance import Covariance
-from wlpy.gist import heatmap
 # %%
 
 
@@ -76,7 +74,7 @@ def generate_poisson_discrete_measurement_error(p, lambd=1):
     return symmetrize_using_upper_triangular(M)
 
 
-def generate_rounded_t_matrix(p, df):
+def generate_rounded_t_measurement_error(p, df):
     """
     Generate a p by p matrix of t-distributed random variables
     that are rounded to integer values.
@@ -91,7 +89,7 @@ def generate_rounded_t_matrix(p, df):
 # %%
 
 
-def multivariate_t_rvs(mean, true_cov, sample_size, df):
+def generate_multivariate_t_samples(mean, true_cov, sample_size, df):
     '''generate random variables of multivariate t distribution
     Parameters
     ----------

@@ -3,6 +3,8 @@ from utils import *
 import pandas as pd
 from POET.poet import POET
 import matplotlib.pyplot as plt
+from wlpy.covariance import Covariance
+from wlpy.gist import heatmap
 # %%
 p = 500
 n = 100
@@ -15,7 +17,7 @@ index = np.arange(0, p, 1)
 distance_matrix = np.abs(np.subtract.outer(index, index))
 
 measurement_error = 5* generate_poisson_discrete_measurement_error(p, lambd=50)
-# measurement_error = generate_rounded_t_matrix(p, df = 10)
+
 
 observed_distance_matrix = distance_matrix + measurement_error
 
