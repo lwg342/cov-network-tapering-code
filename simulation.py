@@ -1,19 +1,20 @@
 # %%
 from utils import *
 import pandas as pd
-from POET.poet import POET 
+from POET.poet import POET
+import matplotlib.pyplot as plt
 # %%
-p = 2000
-n = 500
+p = 500
+n = 100
 lambd = 100
 rho = 0.6
-alpha = 0.1
+alpha = 0.2
 
 # %%
 index = np.arange(0, p, 1)
 distance_matrix = np.abs(np.subtract.outer(index, index))
 
-measurement_error = 10* generate_poisson_discrete_measurement_error(p, lambd=50)
+measurement_error = 5* generate_poisson_discrete_measurement_error(p, lambd=50)
 # measurement_error = generate_rounded_t_matrix(p, df = 10)
 
 observed_distance_matrix = distance_matrix + measurement_error
@@ -47,8 +48,9 @@ estimators = {"Sample Covariance": cov_model.sample_cov(),
                 "Just Diagonal": np.diag(np.diag(sample_cov)),
                 # "Nonlinear Shrinkage": cov_model.nonlin_shrink(),
                 "Network Tapering": taper_cov,
+                "Network Tapering Corrected": correct_eigenvalues(taper_cov),
                 "Network Banding": banding_cov,
-                # "Thresholding": POET(samples.T, K=0, C=0.5).SigmaU,
+                "Thresholding": POET(samples.T, K=0, C=0.5).SigmaU,
                 }
 
 norm_list = ["fro", 2]
@@ -64,16 +66,6 @@ heatmap(taper_cov - true_cov, "Tapering Covariance")
 observed_distance_matrix
 heatmap(observed_distance_matrix, "Observed Distance Matrix")
 # %% 
-import matplotlib.pyplot as plt
 plt.hist(measurement_error.reshape(-1))
 # %%
-def compute_smallest_eigenvalue(true_cov):
-    return LA.eigvals(true_cov).min()
-# %%
 compute_smallest_eigenvalue(estimators["Network Tapering"])
-# %%
-def test_if_symmetric(matrix):
-    return np.allclose(matrix, matrix.T)
-test_if_symmetric(estimators["Network Tapering"])
-estimators["Network Tapering"] - estimators["Network Tapering"].T
-# %%

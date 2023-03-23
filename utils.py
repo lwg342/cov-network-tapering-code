@@ -128,4 +128,24 @@ def generate_normal_samples(true_cov, n, p):
 
 # %%
 def test_if_positive_definite(matrix, tol=1e-8):
-    return np.all(np.linalg.eigvals(matrix) > -tol)
+    return np.all(np.linalg.eigvalsh(matrix) > -tol)
+
+
+def compute_smallest_eigenvalue(matrix):
+    return np.linalg.eigvalsh(matrix).min()
+
+
+def test_if_symmetric(matrix):
+    return np.allclose(matrix, matrix.T)
+
+# %%
+
+def correct_eigenvalues(matrix, tols = 1e-8):
+    # get the eigenvalues and eigenvectors of the matrix
+    eigenvalues, eigenvectors = LA.eigh(matrix)
+    # correct the eigenvalues to be positive
+    eigenvalues[eigenvalues < 0] = tols
+    # reconstruct the matrix
+    corrected_matrix = np.dot(eigenvectors, np.dot(
+        np.diag(eigenvalues), eigenvectors.T))
+    return corrected_matrix
