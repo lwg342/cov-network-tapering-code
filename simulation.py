@@ -3,20 +3,20 @@ from utils import *
 import pandas as pd
 from POET.poet import POET 
 # %%
-p = 500
+p = 2000
 n = 500
 lambd = 100
 rho = 0.6
-alpha = 0.8
+alpha = 0.1
 
 # %%
 index = np.arange(0, p, 1)
 distance_matrix = np.abs(np.subtract.outer(index, index))
 
-measurement_error = 10* generate_poisson_discrete_random_variables(p, lambd=100)
+measurement_error = 10* generate_poisson_discrete_measurement_error(p, lambd=50)
 # measurement_error = generate_rounded_t_matrix(p, df = 10)
 
-observed_distance_matrix = replace_diagonal(distance_matrix + measurement_error, 0)
+observed_distance_matrix = distance_matrix + measurement_error
 
 true_cov = generate_true_cov_cai2010(distance_matrix, rho, alpha)
 heatmap(observed_distance_matrix)
@@ -29,8 +29,8 @@ cov_model = Covariance(samples)
 sample_cov = cov_model.sample_cov()
 
 
-# tapering_bandwidth = np.floor(n**(1/(2 * alpha + 1)))
-tapering_bandwidth = np.floor(n**(1/2))
+tapering_bandwidth = np.floor(n**(1/(2 * alpha + 1)))
+# tapering_bandwidth = np.floor(n**(1/2))
 
 taper_cov = cov_tapering(sample_cov, observed_distance_matrix,
                          bandwidth=tapering_bandwidth, method = "linear")
@@ -39,24 +39,21 @@ banding_bandwidth = np.floor((n/np.log(p))**(1/(2*alpha + 2)))
 banding_cov = cov_tapering(sample_cov, observed_distance_matrix,
                            bandwidth=banding_bandwidth, method="banding")
 
-rslt = POET(samples.T, K =0, C = 0.5)
-thresholding_cov = rslt.SigmaU
-
 print(f"Tapering Bandwidth: {tapering_bandwidth}")
 # %%
 
-compare_dict = {"Sample Covariance": cov_model.sample_cov(),
+estimators = {"Sample Covariance": cov_model.sample_cov(),
                 "Linear Shrinkage": cov_model.lw_lin_shrink(),
                 "Just Diagonal": np.diag(np.diag(sample_cov)),
                 # "Nonlinear Shrinkage": cov_model.nonlin_shrink(),
                 "Network Tapering": taper_cov,
                 "Network Banding": banding_cov,
-                "Thresholding": thresholding_cov,
+                # "Thresholding": POET(samples.T, K=0, C=0.5).SigmaU,
                 }
 
 norm_list = ["fro", 2]
 pd.DataFrame([[name, norm, f"{LA.norm(true_cov - estimator, norm): .3f}", test_if_positive_definite(estimator)]
-              for norm in norm_list for name, estimator in compare_dict.items()]).set_index([0])
+              for norm in norm_list for name, estimator in estimators.items()]).set_index([0])
 
 
 # %% PLOTS
@@ -66,6 +63,17 @@ heatmap(taper_cov - true_cov, "Tapering Covariance")
 # %%
 observed_distance_matrix
 heatmap(observed_distance_matrix, "Observed Distance Matrix")
+# %% 
 import matplotlib.pyplot as plt
-# plt.plot(measurement_error.reshape(-1))
+plt.hist(measurement_error.reshape(-1))
+# %%
+def compute_smallest_eigenvalue(true_cov):
+    return LA.eigvals(true_cov).min()
+# %%
+compute_smallest_eigenvalue(estimators["Network Tapering"])
+# %%
+def test_if_symmetric(matrix):
+    return np.allclose(matrix, matrix.T)
+test_if_symmetric(estimators["Network Tapering"])
+estimators["Network Tapering"] - estimators["Network Tapering"].T
 # %%

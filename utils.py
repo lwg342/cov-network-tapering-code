@@ -58,17 +58,22 @@ def generate_true_cov_cai2010(distance_matrix, rho, alpha):
     true_cov = replace_diagonal(true_cov, 1)
     return true_cov
 
-# %%
+# %%    
 
+def symmetrize_using_upper_triangular(matrix, k=1):
+    M = np.triu(matrix, k)
+    return M + M.T
 
-def generate_poisson_discrete_random_variables(n, lambd=1):
+# %% 
+def generate_poisson_discrete_measurement_error(p, lambd=1):
     """
     This function generates a matrix of size n*n with Poisson discrete random variables having a mean of 0.
     :param n: An integer representing the size of the matrix.
     :param lambd: An optional float representing the lambda value of the Poisson distribution. Default is 1.
     :return: A matrix (2D array) of size n*n with Poisson discrete random variables having a mean of 0.
     """
-    return np.random.poisson(lam=lambd, size=(n, n)) - lambd*np.ones((n, n))
+    M = np.random.poisson(lam=lambd, size=(p, p)) - lambd*np.ones((p, p))
+    return symmetrize_using_upper_triangular(M)
 
 
 def generate_rounded_t_matrix(p, df):
@@ -82,7 +87,7 @@ def generate_rounded_t_matrix(p, df):
     """
     t_matrix = t.rvs(df=df, size=(p, p))
     rounded_t_matrix = np.round(t_matrix).astype(int)
-    return rounded_t_matrix
+    return symmetrize_using_upper_triangular(rounded_t_matrix)
 # %%
 
 
