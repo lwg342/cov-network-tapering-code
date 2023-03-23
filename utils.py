@@ -122,3 +122,5 @@ def generate_normal_samples(true_cov, n, p):
     return samples
 
 # %%
+def test_if_positive_definite(matrix, tol=1e-8):
+    return np.all(np.linalg.eigvals(matrix) > -tol)
