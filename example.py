@@ -50,20 +50,20 @@ banding_bandwidth = get_bandwidth(n, p, "banding", alpha)
 print(f"Tapering Bandwidth: {tapering_bandwidth}\nBanding Bandwidth: {banding_bandwidth}\nTaperingBandwidth Undersmooth: {tapering_bandwidth_undersmooth}")
 
 estimators = {
-              "Sample Covariance": cov_model.sample_cov(),
-              "Just Diagonal": np.diag(np.diag(sample_cov)),
-              "Thresholding": POET(samples.T, K=0, C=0.5).SigmaU,
-              "Network Banding": banding_cov,
-              "Linear Shrinkage": cov_model.lw_lin_shrink(),
-              # "Nonlinear Shrinkage": cov_model.nonlin_shrink(),
-              "Network Tapering": taper_cov,
-              "Network Tapering Undersmoothing": cov_tapering(sample_cov, observed_distance_matrix, bandwidth=tapering_bandwidth_undersmooth, method="linear"),
-              "Network Tapering Corrected": correct_eigenvalues(taper_cov),
-              "Banding with True Distance Matrix": cov_tapering(sample_cov, distance_matrix, bandwidth=banding_bandwidth, method="banding"),
-              "Tapering with True Distance Matrix": cov_tapering(sample_cov, distance_matrix, bandwidth=tapering_bandwidth, method="linear"),
-              "Tapering with True Distance Matrix Undersmoothing": cov_tapering(sample_cov, distance_matrix, bandwidth=tapering_bandwidth_undersmooth, method="linear"),
-              "Network Tapering Undersmoothing Alt": cov_tapering(sample_cov, observed_distance_matrix, bandwidth=np.floor((n/np.log(p))**0.5), method="linear"),
-              }
+    "Sample Covariance": cov_model.sample_cov(),
+    "Just Diagonal": np.diag(np.diag(sample_cov)),
+    "Thresholding": POET(samples.T, K=0, C=0.5).SigmaU,
+    "Network Banding": banding_cov,
+    "Linear Shrinkage": cov_model.lw_lin_shrink(),
+    # "Nonlinear Shrinkage": cov_model.nonlin_shrink(),
+    "Network Tapering": taper_cov,
+    "Network Tapering Undersmoothing": cov_tapering(sample_cov, observed_distance_matrix, bandwidth=tapering_bandwidth_undersmooth, method="linear"),
+    "Network Tapering Corrected": correct_eigenvalues(taper_cov),
+    "Banding with True Distance Matrix": cov_tapering(sample_cov, distance_matrix, bandwidth=banding_bandwidth, method="banding"),
+    "Tapering with True Distance Matrix": cov_tapering(sample_cov, distance_matrix, bandwidth=tapering_bandwidth, method="linear"),
+    "Tapering with True Distance Matrix Undersmoothing": cov_tapering(sample_cov, distance_matrix, bandwidth=tapering_bandwidth_undersmooth, method="linear"),
+    "Network Tapering Undersmoothing Alt": cov_tapering(sample_cov, observed_distance_matrix, bandwidth=np.floor((n/np.log(p))**0.5), method="linear"),
+}
 
 norm_list = ["fro", 2]
 result = {}
