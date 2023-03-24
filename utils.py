@@ -18,6 +18,17 @@ def matrix_elementwise_multiplication(mat1, mat2):
     return result_matrix
 
 
+def get_bandwidth(sample_size, p, method, alpha):
+    # p is the number of features 
+    if method == "tapering":
+        return np.floor(sample_size**(1/(2 * alpha + 1)))
+    elif method == "banding":
+        return np.floor((sample_size/np.log(p))**(1/(2*alpha + 2)))
+    elif method == "tapering_undersmoothing":
+        return np.floor(sample_size**(1/2))
+    else:
+        raise ValueError("Method must be either tapering or banding")
+    
 def tapering_weights(distance_matrix, bandwidth, method="linear"):
     """
     Construct the tapering weights based on distance d and bandwidth K. 
@@ -147,3 +158,8 @@ def correct_eigenvalues(matrix, tols = 1e-8):
     corrected_matrix = np.dot(eigenvectors, np.dot(
         np.diag(eigenvalues), eigenvectors.T))
     return corrected_matrix
+
+
+def compute_norm_inverse_difference(matrix1, matrix2, ord = 2):
+    return LA.norm(LA.inv(matrix1) - LA.inv(matrix2), ord)
+
