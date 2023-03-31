@@ -11,18 +11,16 @@ n = 3000
 lambd = 100
 rho = 0.6
 alpha = 0.5
-
+measurement_error_mean = 0
 # %%
 index = np.arange(0, p, 1)
 distance_matrix = np.abs(np.subtract.outer(index, index))
+true_cov = generate_true_cov_cai2010(distance_matrix, rho, alpha)
 
-measurement_error = 1 * generate_poisson_discrete_measurement_error(p, lambd=lambd)
-
-
+measurement_error = 1 * generate_poisson_discrete_measurement_error(p, lambd=lambd) + measurement_error_mean
 observed_distance_matrix = distance_matrix + measurement_error
 
-true_cov = generate_true_cov_cai2010(distance_matrix, rho, alpha)
-heatmap(observed_distance_matrix)
+# heatmap(observed_distance_matrix)
 
 # %%
 samples = generate_normal_samples(true_cov, n, p)
@@ -31,14 +29,7 @@ samples = generate_normal_samples(true_cov, n, p)
 # %%
 cov_model = Covariance(samples)
 sample_cov = cov_model.sample_cov()
-tapering_bandwidth = np.floor(n**(1/(2 * alpha + 1)))
-# tapering_bandwidth = np.floor(n**(1/2))
 
-taper_cov = cov_tapering(sample_cov, observed_distance_matrix,
-                         bandwidth=tapering_bandwidth, method="linear")
-banding_bandwidth = np.floor((n/np.log(p))**(1/(2*alpha + 2)))
-banding_cov = cov_tapering(sample_cov, observed_distance_matrix,
-                           bandwidth=banding_bandwidth, method="banding")
 
 
 # %%
@@ -46,6 +37,12 @@ tapering_bandwidth = get_bandwidth(n, p, "tapering", alpha)
 tapering_bandwidth_undersmooth = get_bandwidth(
     n, p, "tapering_undersmoothing", alpha)
 banding_bandwidth = get_bandwidth(n, p, "banding", alpha)
+
+taper_cov = cov_tapering(sample_cov, observed_distance_matrix,
+                         bandwidth=tapering_bandwidth, method="linear")
+banding_cov = cov_tapering(sample_cov, observed_distance_matrix,
+                           bandwidth=banding_bandwidth, method="banding")
+
 
 print(f"Tapering Bandwidth: {tapering_bandwidth}\nBanding Bandwidth: {banding_bandwidth}\nTaperingBandwidth Undersmooth: {tapering_bandwidth_undersmooth}")
 
