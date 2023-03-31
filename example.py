@@ -16,8 +16,7 @@ alpha = 0.5
 index = np.arange(0, p, 1)
 distance_matrix = np.abs(np.subtract.outer(index, index))
 
-measurement_error = 1 * \
-    generate_poisson_discrete_measurement_error(p, lambd=lambd)
+measurement_error = 1 * generate_poisson_discrete_measurement_error(p, lambd=lambd)
 
 
 observed_distance_matrix = distance_matrix + measurement_error

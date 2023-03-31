@@ -54,7 +54,6 @@ def cov_tapering(sample_cov, distance_matrix, bandwidth, method="linear"):
     return matrix_elementwise_multiplication(sample_cov, tapering_weights(distance_matrix, bandwidth, method))
 
 
-# %%
 def replace_diagonal(matrix, value):
     np.fill_diagonal(matrix, value)
     return matrix
@@ -73,7 +72,6 @@ def symmetrize_using_upper_triangular(matrix, k=1):
     M = np.triu(matrix, k)
     return M + M.T
 
-# %% 
 def generate_poisson_discrete_measurement_error(p, lambd=1):
     """
     This function generates a matrix of size n*n with Poisson discrete random variables having a mean of 0.
@@ -97,7 +95,6 @@ def generate_rounded_t_measurement_error(p, df):
     t_matrix = t.rvs(df=df, size=(p, p))
     rounded_t_matrix = np.round(t_matrix).astype(int)
     return symmetrize_using_upper_triangular(rounded_t_matrix)
-# %%
 
 
 def generate_multivariate_t_samples(mean, true_cov, sample_size, df):
@@ -135,7 +132,6 @@ def generate_normal_samples(true_cov, n, p):
     samples = np.random.multivariate_normal(mean, true_cov, size=n)
     return samples
 
-# %%
 def test_if_positive_definite(matrix, tol=1e-8):
     return np.all(np.linalg.eigvalsh(matrix) > -tol)
 
@@ -146,8 +142,6 @@ def compute_smallest_eigenvalue(matrix):
 
 def test_if_symmetric(matrix):
     return np.allclose(matrix, matrix.T)
-
-# %%
 
 def correct_eigenvalues(matrix, tols = 1e-8):
     # get the eigenvalues and eigenvectors of the matrix
