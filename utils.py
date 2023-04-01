@@ -19,7 +19,7 @@ def matrix_elementwise_multiplication(mat1, mat2):
 
 
 def get_bandwidth(sample_size, p, method, alpha):
-    # p is the number of features 
+    # p is the number of features
     if method == "tapering":
         return np.floor(sample_size**(1/(2 * alpha + 1)))
     elif method == "banding":
@@ -28,7 +28,8 @@ def get_bandwidth(sample_size, p, method, alpha):
         return np.floor(sample_size**(1/2))
     else:
         raise ValueError("Method must be either tapering or banding")
-    
+
+
 def tapering_weights(distance_matrix, bandwidth, method="linear"):
     """
     Construct the tapering weights based on distance d and bandwidth K. 
@@ -50,7 +51,7 @@ def tapering_weights(distance_matrix, bandwidth, method="linear"):
             "Available methods are 'linear' and 'banding'.")
 
 
-def cov_tapering(sample_cov, distance_matrix, bandwidth, method="linear"):
+def cov_tapering(sample_cov, distance_matrix, bandwidth, method="linear", **kwargs):
     return matrix_elementwise_multiplication(sample_cov, tapering_weights(distance_matrix, bandwidth, method))
 
 
@@ -66,38 +67,47 @@ def generate_true_cov_cai2010(distance_matrix, rho, alpha):
     true_cov = replace_diagonal(true_cov, 1)
     return true_cov
 
-# %%    
+# %%
+
 
 def symmetrize_using_upper_triangular(matrix, k=1):
     M = np.triu(matrix, k)
     return M + M.T
 
-def generate_poisson_discrete_measurement_error(p, lambd=1):
+
+def generate_poisson_discrete_measurement_error(p, lambd=1, seed=None):
     """
     This function generates a matrix of size n*n with Poisson discrete random variables having a mean of 0.
     :param n: An integer representing the size of the matrix.
     :param lambd: An optional float representing the lambda value of the Poisson distribution. Default is 1.
+    :param seed: An optional integer representing the random seed to use for generating the Poisson distribution.
     :return: A matrix (2D array) of size n*n with Poisson discrete random variables having a mean of 0.
     """
+    if seed is not None:
+        np.random.seed(seed)
     M = np.random.poisson(lam=lambd, size=(p, p)) - lambd*np.ones((p, p))
     return symmetrize_using_upper_triangular(M)
 
 
-def generate_rounded_t_measurement_error(p, df):
+
+def generate_rounded_t_measurement_error(p, df, seed=None):
     """
     Generate a p by p matrix of t-distributed random variables
     that are rounded to integer values.
 
     :param p: int, the number of rows and columns of the matrix
     :param df: float, the degrees of freedom parameter for the t-distribution
+    :param seed: An optional integer representing the random seed to use for generating the t-distribution.
     :return: numpy.ndarray, the generated matrix of rounded t-distributed random variables
     """
+    if seed is not None:
+        np.random.seed(seed)
     t_matrix = t.rvs(df=df, size=(p, p))
     rounded_t_matrix = np.round(t_matrix).astype(int)
     return symmetrize_using_upper_triangular(rounded_t_matrix)
 
 
-def generate_multivariate_t_samples(mean, true_cov, sample_size, df):
+def generate_multivariate_t_samples(mean, true_cov, sample_size, df, seed=None):
     '''generate random variables of multivariate t distribution
     Parameters
     ----------
@@ -109,6 +119,7 @@ def generate_multivariate_t_samples(mean, true_cov, sample_size, df):
         degrees of freedom
     n : int
         number of observations, return random array will be (n, len(m))
+    seed: An optional integer representing the random seed to use for generating the multivariate t distribution.
     Returns
     -------
     rvs : ndarray, (n, len(m))
@@ -117,6 +128,8 @@ def generate_multivariate_t_samples(mean, true_cov, sample_size, df):
     '''
     mean = np.asarray(mean)
     d = len(mean)
+    if seed is not None:
+        np.random.seed(seed)
     if df == np.inf:
         x = np.ones(sample_size)
     else:
@@ -127,10 +140,14 @@ def generate_multivariate_t_samples(mean, true_cov, sample_size, df):
     return mean + z/np.sqrt(x)[:, None]
 
 
-def generate_normal_samples(true_cov, n, p):
+
+def generate_normal_samples(true_cov, n, p, seed=None):
     mean = np.zeros(p)
+    if seed is not None:
+        np.random.seed(seed)
     samples = np.random.multivariate_normal(mean, true_cov, size=n)
     return samples
+
 
 def test_if_positive_definite(matrix, tol=1e-8):
     return np.all(np.linalg.eigvalsh(matrix) > -tol)
@@ -143,7 +160,8 @@ def compute_smallest_eigenvalue(matrix):
 def test_if_symmetric(matrix):
     return np.allclose(matrix, matrix.T)
 
-def correct_eigenvalues(matrix, tols = 1e-8):
+
+def correct_eigenvalues(matrix, tols=1e-8):
     # get the eigenvalues and eigenvectors of the matrix
     eigenvalues, eigenvectors = LA.eigh(matrix)
     # correct the eigenvalues to be positive
@@ -154,6 +172,24 @@ def correct_eigenvalues(matrix, tols = 1e-8):
     return corrected_matrix
 
 
-def compute_norm_inverse_difference(matrix1, matrix2, ord = 2):
+def compute_norm_inverse_difference(matrix1, matrix2, ord=2):
     return LA.norm(LA.inv(matrix1) - LA.inv(matrix2), ord)
 
+
+def list_to_dict(lst, keys):
+    """
+    Converts a list of values to a dictionary using a list of keys.
+
+    Parameters:
+        lst (list): The list of values to convert to a dictionary.
+        keys (list): The list of keys to use for the dictionary. Must have the same length as lst.
+
+    Returns:
+        dict: The dictionary with keys from the keys list and values from the lst list.
+    """
+    if len(lst) != len(keys):
+        raise ValueError("The length of the list and keys must be the same.")
+
+    return dict(zip(keys, lst))
+
+# %%
