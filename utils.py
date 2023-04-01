@@ -2,21 +2,8 @@
 import numpy as np
 from scipy import linalg as LA
 from scipy.stats import t
+
 # %%
-
-
-def matrix_elementwise_multiplication(mat1, mat2):
-    """
-    This function performs elementwise multiplication of two matrices after checking their dimensions.
-    :param mat1: A matrix (2D array)
-    :param mat2: A matrix (2D array)
-    :return: A matrix (2D array) which is the result of elementwise multiplication of two matrices.
-    """
-    if mat1.shape != mat2.shape:
-        raise ValueError("Matrices are not of the same dimensions!")
-    result_matrix = np.multiply(mat1, mat2)
-    return result_matrix
-
 
 def get_bandwidth(sample_size, p, method, alpha):
     # p is the number of features
@@ -52,7 +39,7 @@ def tapering_weights(distance_matrix, bandwidth, method="linear"):
 
 
 def cov_tapering(sample_cov, distance_matrix, bandwidth, method="linear", **kwargs):
-    return matrix_elementwise_multiplication(sample_cov, tapering_weights(distance_matrix, bandwidth, method))
+    return sample_cov * tapering_weights(distance_matrix, bandwidth, method)
 
 
 def replace_diagonal(matrix, value):

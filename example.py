@@ -53,14 +53,14 @@ estimators = {
     "Just Diagonal": np.diag(np.diag(sample_cov)),
     "Thresholding": POET(samples.T, K=0, C=0.5).SigmaU,
     "Network Banding": banding_cov,
-    "Linear Shrinkage": cov_model.lw_lin_shrink(),
+    "Linear Shrinkage": cov_model.linear_shrinkage(),
     # "Nonlinear Shrinkage": cov_model.nonlin_shrink(),
     "Network Tapering": taper_cov,
     "Network Tapering Undersmoothing": cov_tapering(sample_cov, observed_distance_matrix, bandwidth=tapering_bandwidth_undersmooth, method="linear"),
     "Network Tapering Corrected": correct_eigenvalues(taper_cov),
-    "Oracle Network Banding": cov_tapering(sample_cov, distance_matrix, bandwidth=banding_bandwidth, method="banding"),
-    "Oracle Network Tapering": cov_tapering(sample_cov, distance_matrix, bandwidth=tapering_bandwidth, method="linear"),
-    "Oracle Network Tapering Undersmoothing": cov_tapering(sample_cov, distance_matrix, bandwidth=tapering_bandwidth_undersmooth, method="linear"),
+    "Network Banding with True Distance": cov_tapering(sample_cov, distance_matrix, bandwidth=banding_bandwidth, method="banding"),
+    "Network Tapering with True Distance": cov_tapering(sample_cov, distance_matrix, bandwidth=tapering_bandwidth, method="linear"),
+    "Network Tapering with True Distance Undersmoothing": cov_tapering(sample_cov, distance_matrix, bandwidth=tapering_bandwidth_undersmooth, method="linear"),
     "Network Tapering Undersmoothing Alt": cov_tapering(sample_cov, observed_distance_matrix, bandwidth=np.floor((n/np.log(p))**0.5), method="linear"),
 }
 
@@ -82,7 +82,7 @@ result[2]
 # %% PLOTS
 # heatmap(banding_cov, "Banding Covariance")
 heatmap(taper_cov - true_cov, "Tapering Covariance")
-# heatmap(cov_model.lw_lin_shrink())
+# heatmap(cov_model.linear_shrinkage())
 # %%
 observed_distance_matrix
 heatmap(observed_distance_matrix, "Observed Distance Matrix")
@@ -128,7 +128,7 @@ def get_covariance_estimators(n, p, alpha, lambd, bias, norm_type, distance_matr
         "Just Diagonal": np.diag(np.diag(sample_cov)),
         "Thresholding": POET(samples.T, K=0, C=0.5).SigmaU,
         "Network Banding": banding_cov,
-        "Linear Shrinkage": cov_model.lw_lin_shrink(),
+        "Linear Shrinkage": cov_model.linear_shrinkage(),
         "Network Tapering": taper_cov,
         "Network Tapering Undersmoothing": cov_tapering(sample_cov, observed_distance_matrix, bandwidth=tapering_bandwidth_undersmooth, method="linear"),
         "Oracle Network Banding": cov_tapering(sample_cov, distance_matrix, bandwidth=banding_bandwidth, method="banding"),
