@@ -1,4 +1,5 @@
 # %%
+import pickle
 import pandas as pd
 import numpy as np
 from POET.poet import POET
@@ -137,8 +138,8 @@ def compute_average_loss(
 
 # %%
 nsim = 100
-sample_size_list = [100, 500]
-p_list = [200, 500, 1000]
+sample_size_list = [100, 200, 500]
+p_list = [100, 200, 500]
 alpha_list = [0.1, 0.25, 0.5, 0.9]
 lambd_list = [1e1, 1e2, 1e4]
 measurement_error_mean = [0.0]
@@ -157,8 +158,9 @@ estimator_list = [
     "Network Banding",
     "Network Banding with True Distance Matrix",
 ]
-results = []
+
 for p in p_list:
+    results = []
     for alpha in alpha_list:
         for sample_size in sample_size_list:
             start_time = time.time()
@@ -175,7 +177,7 @@ for p in p_list:
                             seed_list=seed_list,
                             **fixed_part,
                         )
-                        res = {
+                        res={
                             "True Covariance": LA.norm(
                                 fixed_part["true_cov"], norm_type
                             )
@@ -201,11 +203,6 @@ for p in p_list:
             print(
                 f"p={p}, alpha={alpha}, sample_size={sample_size}, Time elapsed: {time_elapsed} seconds"
             )
-# %%
-
-# results = pd.DataFrame(results).set_index(
-# ["sample_size", "p", "alpha", "lambd", "bias", "norm_type"])
-results = pd.DataFrame(results).set_index(["sample_size", "p", "alpha"])
-results
-# results.iloc[:5, :]
-# %%
+    results = pd.DataFrame(results).set_index(["sample_size", "p", "alpha", "lambd", "bias", "norm_type"])
+    with open(f"p_{p}", "wb") as file:
+        pickle.dump(results, file)
