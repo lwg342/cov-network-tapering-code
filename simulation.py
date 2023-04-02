@@ -16,7 +16,9 @@ def generate_fixed_part(sample_size, p, alpha, lambd, bias, norm_type):
     true_cov = generate_true_cov_cai2010(distance_matrix, rho, alpha)
     tapering_bandwidth = get_bandwidth(sample_size, p, "tapering", alpha)
     banding_bandwidth = get_bandwidth(sample_size, p, "banding", alpha)
-    tapering_bandwidth_undersmooth = get_bandwidth(sample_size, p, "tapering_undersmoothing", alpha)
+    tapering_bandwidth_undersmooth = get_bandwidth(
+        sample_size, p, "tapering_undersmoothing", alpha
+    )
     fixed_part = {
         "sample_size": sample_size,
         "p": p,
@@ -86,7 +88,6 @@ def compute_average_loss(
                 true_cov - random_part["threhsold_corr"],
                 norm_type,
             ),
-            
             LA.norm(
                 true_cov
                 - cov_tapering(
@@ -181,7 +182,7 @@ for p in p_list:
                             seed_list=seed_list,
                             **fixed_part,
                         )
-                        res={
+                        res = {
                             "True Covariance": LA.norm(
                                 fixed_part["true_cov"], norm_type
                             )
@@ -207,7 +208,11 @@ for p in p_list:
             print(
                 f"p={p}, alpha={alpha}, sample_size={sample_size}, Time elapsed: {time_elapsed} seconds"
             )
-    results = pd.DataFrame(results).set_index(["sample_size", "p", "alpha", "lambd", "bias", "norm_type"])
+    results = pd.DataFrame(results).set_index(
+        ["sample_size", "p", "alpha", "lambd", "bias", "norm_type"]
+    )
     with open(f"p_{p}.pkl", "wb") as file:
         pickle.dump(results, file)
+
+print("Finished")
 # %%
