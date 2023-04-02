@@ -14,9 +14,9 @@ def generate_fixed_part(sample_size, p, alpha, lambd, bias, norm_type):
     distance_matrix = np.abs(np.subtract.outer(index, index))
 
     true_cov = generate_true_cov_cai2010(distance_matrix, rho, alpha)
-    tapering_bandwidth = np.floor(sample_size ** (1 / (2 * alpha + 1)))
-    tapering_bandwidth_undersmooth = np.floor(sample_size ** (1 / (2 * alpha + 1))) + 1
-    banding_bandwidth = np.floor(sample_size ** (1 / (2 * alpha + 1)))
+    tapering_bandwidth = get_bandwidth(sample_size, p, "tapering", alpha)
+    banding_bandwidth = get_bandwidth(sample_size, p, "banding", alpha)
+    tapering_bandwidth_undersmooth = get_bandwidth(sample_size, p, "tapering_undersmoothing", alpha)
     fixed_part = {
         "sample_size": sample_size,
         "p": p,
@@ -77,12 +77,16 @@ def compute_average_loss(
     norm_type = fixed_part["norm_type"]
     rslt = [
         [
+            # Sample Covariance
             LA.norm(true_cov - random_part["sample_cov_estimate"], norm_type),
+            # Linear Shrinkage
             LA.norm(true_cov - random_part["linear_shrinkage"], norm_type),
+            # Threshold Correlation
             LA.norm(
                 true_cov - random_part["threhsold_corr"],
                 norm_type,
             ),
+            
             LA.norm(
                 true_cov
                 - cov_tapering(
@@ -139,8 +143,8 @@ def compute_average_loss(
 # %%
 nsim = 100
 sample_size_list = [100, 200, 500]
-p_list = [100, 200, 500]
-alpha_list = [0.1, 0.25, 0.5, 0.9]
+p_list = [100, 200, 500, 1000]
+alpha_list = [0.1, 0.25, 0.5, 0.75, 1.0]
 lambd_list = [1e1, 1e2, 1e4]
 measurement_error_mean = [0.0]
 norm_list = [2]
@@ -204,5 +208,6 @@ for p in p_list:
                 f"p={p}, alpha={alpha}, sample_size={sample_size}, Time elapsed: {time_elapsed} seconds"
             )
     results = pd.DataFrame(results).set_index(["sample_size", "p", "alpha", "lambd", "bias", "norm_type"])
-    with open(f"p_{p}", "wb") as file:
+    with open(f"p_{p}.pkl", "wb") as file:
         pickle.dump(results, file)
+# %%

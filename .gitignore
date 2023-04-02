@@ -1,7 +1,12 @@
 # ------ Tempelate starts ------#	
 # ignore .DS_Store and subfolders	
+*.pkl
+*.pdf
+*.html
+*.ipynb
+*.tex
 
-* /*
+*/*
 .vscode/*
 .DS_Store
 
