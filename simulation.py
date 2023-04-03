@@ -151,8 +151,6 @@ measurement_error_mean = [0.0]
 norm_list = [2]
 seed_list = [2 * j for j in range(nsim)]
 rho = 0.6
-
-
 estimator_list = [
     "Sample Covariance",
     "Linear Shrinkage",
@@ -164,8 +162,11 @@ estimator_list = [
     "Network Banding with True Distance Matrix",
 ]
 
+# %%
+
+
 for p in p_list:
-    results = []
+    result = []
     for alpha in alpha_list:
         for sample_size in sample_size_list:
             start_time = time.time()
@@ -201,18 +202,72 @@ for p in p_list:
                                 ]
                             )
                         )
-                        results.append(res)
+                        result.append(res)
 
             end_time = time.time()
             time_elapsed = round(end_time - start_time)
             print(
                 f"p={p}, alpha={alpha}, sample_size={sample_size}, Time elapsed: {time_elapsed} seconds"
             )
-    results = pd.DataFrame(results).set_index(
+    result = pd.DataFrame(result).set_index(
         ["sample_size", "p", "alpha", "lambd", "bias", "norm_type"]
     )
     with open(f"p_{p}.pkl", "wb") as file:
-        pickle.dump(results, file)
+        pickle.dump(result, file)
+
+print("Finished")
+# %%
+
+
+p = 500
+sample_size = 200
+alpha_list = np.linspace(0.1, 1.0, 19)
+lambd_list = [1e1, 1e2, 1e4]
+seed_list = [2 * j for j in range(nsim)]
+
+result_varying_alpha = []
+for alpha in alpha_list:
+    start_time = time.time()
+    for lambd in lambd_list:
+        for bias in measurement_error_mean:
+            for norm_type in norm_list:
+                fixed_part = generate_fixed_part(
+                    sample_size, p, alpha, lambd, bias, norm_type
+                )
+                loss = compute_average_loss(
+                    nsim,
+                    generate_random_part,
+                    fixed_part,
+                    seed_list=seed_list,
+                    **fixed_part,
+                )
+                res = {"True Covariance": LA.norm(fixed_part["true_cov"], norm_type)}
+                res.update(list_to_dict(loss, estimator_list))
+                res.update(
+                    dict(
+                        (key, fixed_part[key])
+                        for key in [
+                            "sample_size",
+                            "p",
+                            "alpha",
+                            "lambd",
+                            "bias",
+                            "norm_type",
+                        ]
+                    )
+                )
+                result_varying_alpha.append(res)
+
+        end_time = time.time()
+        time_elapsed = round(end_time - start_time)
+        print(
+            f"p={p}, alpha={alpha}, sample_size={sample_size}, Time elapsed: {time_elapsed} seconds"
+        )
+result_varying_alpha = pd.DataFrame(result_varying_alpha).set_index(
+    ["sample_size", "p", "alpha", "lambd", "bias", "norm_type"]
+)
+with open(f"varying_alpha.pkl", "wb") as file:
+    pickle.dump(result_varying_alpha, file)
 
 print("Finished")
 # %%
