@@ -1,7 +1,6 @@
 # %%
 from utils import *
 import pandas as pd
-from POET.poet import POET
 import matplotlib.pyplot as plt
 from wlpy.covariance import Covariance
 from wlpy.gist import heatmap
@@ -11,7 +10,7 @@ p = 1000
 n = 500
 lambd = 100
 rho = 0.6
-alpha =1.0
+alpha = 1.0
 measurement_error_mean = 0
 # %%
 index = np.arange(0, p, 1)
@@ -192,7 +191,7 @@ def get_covariance_estimators(
     estimators = {
         "Sample Covariance": cov_model.sample_cov(),
         "Just Diagonal": np.diag(np.diag(sample_cov)),
-        "Thresholding": POET(samples.T, K=0, C=0.5).SigmaU,
+        "Thresholding": cov_model.threshold_corr(regularization_constant=0.5),
         "Network Banding": banding_cov,
         "Linear Shrinkage": cov_model.linear_shrinkage(),
         "Network Tapering": taper_cov,

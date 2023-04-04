@@ -92,6 +92,7 @@ def generate_normal_discrete_measurement_error(p, mu=0, sigma=1, seed=None):
     M = np.round(np.random.normal(mu, sigma, size=(p, p))).astype(int)
     return symmetrize_using_upper_triangular(M)
 
+
 def generate_rounded_t_measurement_error(p, df, seed=None):
     """
     Generate a p by p matrix of t-distributed random variables

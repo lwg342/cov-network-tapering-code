@@ -2,6 +2,7 @@
 import pickle
 import pandas as pd
 import numpy as np
+import matplotlib.pyplot as plt
 
 output_folder = "cov-network-tapering-latex"
 error_distribution = "poisson"
@@ -121,7 +122,6 @@ result_alpha = result_alpha.reset_index()
 df_plot = result_alpha.loc[(result_alpha["lambd"] == 100)]
 
 
-
 df_plot = df_plot[
     [
         "alpha",
@@ -133,18 +133,28 @@ df_plot = df_plot[
         "Soft Thresholding",
     ]
 ].set_index("alpha")
-col_to_divide_by = 'True Covariance'
-df_plot.loc[:, df_plot.columns != col_to_divide_by] = df_plot.loc[:, df_plot.columns != col_to_divide_by].div(df_plot[col_to_divide_by], axis=0)
+col_to_divide_by = "True Covariance"
+df_plot.loc[:, df_plot.columns != col_to_divide_by] = df_plot.loc[
+    :, df_plot.columns != col_to_divide_by
+].div(df_plot[col_to_divide_by], axis=0)
 df_plot.drop(col_to_divide_by, axis=1)
 
-import matplotlib.pyplot as plt
-
-ax = df_plot[["Sample Covariance",
+font = {"family": "Times", "weight": "normal", "size": 12}
+plt.rc("font", **font)
+ax = df_plot[
+    [
+        "Sample Covariance",
         "Network Tapering",
         "Network Tapering with True Distance Matrix",
         "Network Tapering Undersmoothing",
-        "Soft Thresholding"]].plot()
+        "Soft Thresholding",
+    ]
+].plot()
 ax.set_xticks(np.linspace(0.1, 1, 10))
 ax.legend(["SC", "NT", "NTD", "NTUS", "ST"], loc="center left", bbox_to_anchor=(1, 0.5))
 ax.set_xlabel("$\\alpha$")
 ax.set_ylabel("Estimation Error")
+plt.savefig(f"{output_folder}/varying_alpha_{error_distribution}.pdf")
+
+
+# %%

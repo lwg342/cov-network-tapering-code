@@ -2,13 +2,12 @@
 import pickle
 import pandas as pd
 import numpy as np
-from POET.poet import POET
 from utils import *
 from wlpy.covariance import Covariance
 import time
 
-error_distribution = "gaussian"
-print("Current date:", error_distribution)
+error_distribution = "poisson"
+print("Measurement Error Distribution:", error_distribution)
 # %%
 
 
@@ -47,15 +46,22 @@ def generate_random_part(fixed_part, seed=None, **kwargs):
     distance_matrix = fixed_part["distance_matrix"]
 
     samples = generate_normal_samples(true_cov, sample_size, p, seed)
-    # measurement_error = (
-    #     1 * generate_poisson_discrete_measurement_error(p, lambd=lambd, seed=seed)
-    #     + bias
-    # )
-    measurement_error = (
-        1
-        * generate_normal_discrete_measurement_error(p, sigma=np.sqrt(lambd), seed=seed)
-        + bias
-    )
+
+    if error_distribution == "poisson":
+        measurement_error = (
+            1 * generate_poisson_discrete_measurement_error(p, lambd=lambd, seed=seed)
+            + bias
+        )
+    elif error_distribution == "gaussian":
+        measurement_error = (
+            1
+            * generate_normal_discrete_measurement_error(
+                p, sigma=np.sqrt(lambd), seed=seed
+            )
+            + bias
+        )
+    else:
+        raise NotImplementedError("Only Gaussian and Poisson are implemented")
 
     observed_distance_matrix = distance_matrix + measurement_error
     cov_model = Covariance(samples)
@@ -151,7 +157,6 @@ def compute_average_loss(
     return np.mean(rslt, axis=0)
 
 
-# %%
 nsim = 100
 sample_size_list = [100, 200, 500]
 p_list = [100, 200, 500, 1000]
@@ -227,7 +232,6 @@ for p in p_list:
 
 print("Finished")
 # %%
-
 
 p = 500
 sample_size = 200
