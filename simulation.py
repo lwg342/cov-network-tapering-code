@@ -6,12 +6,14 @@ from utils import *
 from wlpy.covariance import Covariance
 import time
 
-error_distribution = "poisson"
+error_distribution = "Gaussian"
 print("Measurement Error Distribution:", error_distribution)
 # %%
 
 
-def generate_fixed_part(sample_size, p, alpha, lambd, bias, norm_type):
+def generate_fixed_part(
+    sample_size, p, alpha, lambd, bias, norm_type, error_distribution
+):
 
     index = np.arange(0, p, 1)
     distance_matrix = np.abs(np.subtract.outer(index, index))
@@ -34,6 +36,7 @@ def generate_fixed_part(sample_size, p, alpha, lambd, bias, norm_type):
         "tapering_bandwidth_undersmooth": tapering_bandwidth_undersmooth,
         "banding_bandwidth": banding_bandwidth,
         "norm_type": norm_type,
+        "error_distribution": error_distribution,
     }
     return fixed_part
 
@@ -44,15 +47,17 @@ def generate_random_part(fixed_part, seed=None, **kwargs):
     p = fixed_part["p"]
     lambd = fixed_part["lambd"]
     distance_matrix = fixed_part["distance_matrix"]
+    error_distribution = fixed_part["error_distribution"]
+    bias = fixed_part["bias"]
 
     samples = generate_normal_samples(true_cov, sample_size, p, seed)
 
-    if error_distribution == "poisson":
+    if error_distribution == "Poisson":
         measurement_error = (
             1 * generate_poisson_discrete_measurement_error(p, lambd=lambd, seed=seed)
             + bias
         )
-    elif error_distribution == "gaussian":
+    elif error_distribution == "Gaussian":
         measurement_error = (
             1
             * generate_normal_discrete_measurement_error(
@@ -189,7 +194,13 @@ for p in p_list:
                 for bias in measurement_error_mean:
                     for norm_type in norm_list:
                         fixed_part = generate_fixed_part(
-                            sample_size, p, alpha, lambd, bias, norm_type
+                            sample_size,
+                            p,
+                            alpha,
+                            lambd,
+                            bias,
+                            norm_type,
+                            error_distribution,
                         )
                         loss = compute_average_loss(
                             nsim,
@@ -246,7 +257,7 @@ for alpha in alpha_list:
         for bias in measurement_error_mean:
             for norm_type in norm_list:
                 fixed_part = generate_fixed_part(
-                    sample_size, p, alpha, lambd, bias, norm_type
+                    sample_size, p, alpha, lambd, bias, norm_type, error_distribution
                 )
                 loss = compute_average_loss(
                     nsim,
@@ -284,4 +295,3 @@ with open(f"varying_alpha_{error_distribution}.pkl", "wb") as file:
     pickle.dump(result_varying_alpha, file)
 
 print("Finished")
-# %%

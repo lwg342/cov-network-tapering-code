@@ -60,8 +60,8 @@ def generate_true_cov_cai2010(distance_matrix, rho, alpha):
 
 
 def symmetrize_using_upper_triangular(matrix, k=1):
-    M = np.triu(matrix, k)
-    return M + M.T
+    mat_upper = np.triu(matrix, k)
+    return mat_upper + mat_upper.T
 
 
 def generate_poisson_discrete_measurement_error(p, lambd=1, seed=None):
@@ -74,8 +74,8 @@ def generate_poisson_discrete_measurement_error(p, lambd=1, seed=None):
     """
     if seed is not None:
         np.random.seed(seed)
-    M = np.random.poisson(lam=lambd, size=(p, p)) - lambd * np.ones((p, p))
-    return symmetrize_using_upper_triangular(M)
+    mat = np.random.poisson(lam=lambd, size=(p, p)) - lambd * np.ones((p, p))
+    return symmetrize_using_upper_triangular(mat)
 
 
 def generate_normal_discrete_measurement_error(p, mu=0, sigma=1, seed=None):
@@ -89,8 +89,8 @@ def generate_normal_discrete_measurement_error(p, mu=0, sigma=1, seed=None):
     """
     if seed is not None:
         np.random.seed(seed)
-    M = np.round(np.random.normal(mu, sigma, size=(p, p))).astype(int)
-    return symmetrize_using_upper_triangular(M)
+    mat = np.round(np.random.normal(mu, sigma, size=(p, p))).astype(int)
+    return symmetrize_using_upper_triangular(mat)
 
 
 def generate_rounded_t_measurement_error(p, df, seed=None):

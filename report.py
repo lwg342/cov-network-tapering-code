@@ -5,7 +5,7 @@ import numpy as np
 import matplotlib.pyplot as plt
 
 output_folder = "cov-network-tapering-latex"
-error_distribution = "gaussian"
+error_distribution = "Gaussian"
 
 file_list = [
     f"p_100_{error_distribution}.pkl",
@@ -41,8 +41,8 @@ table1.to_latex(
     column_format="p{0.7cm}p{0.7cm}p{0.7cm}p{0.8cm}p{0.8cm}p{0.8cm}p{0.8cm}p{0.8cm}p{0.8cm}p{0.8cm}p{0.8cm}p{0.8cm}",
     header=["$\\Sigma$", "SC", "LS", "ST", "NT", "NTD", "NTUS", "NB", "NBD"],
     escape=False,
-    caption=f"The average error in terms of spectral norm for different estimators, with the measurement errors generated from a Poisson distribution with parameter $\\lambda = {lambd}$. The first column is the spectral norm of the true covariance matrix $\\Sigma$. The following columns are the spectral norm of sample covariance estimator(SC), the linear shrinkage estimator (LS), the soft thresholding estimator (ST), the network tapering estimator (NT), the network tapering estimator with true distance matrix (NTD), the network tapering estimator with the undersmoothing correction (NTUS), the network banding estimator (NB), and the network banding estimator with the true distance matrix (NBD) ",
-    label="table:spectral_error",
+    caption=f"The average error in terms of spectral norm for different estimators, with the measurement errors generated from a {error_distribution} distribution with parameter $\\lambda = {lambd}$. The first column is the spectral norm of the true covariance matrix $\\Sigma$. The following columns are the spectral norm of sample covariance estimator(SC), the linear shrinkage estimator (LS), the soft thresholding estimator (ST), the network tapering estimator (NT), the network tapering estimator with true distance matrix (NTD), the network tapering estimator with the undersmoothing correction (NTUS), the network banding estimator (NB), and the network banding estimator with the true distance matrix (NBD) ",
+    label=f"table:spectral_error_{error_distribution}",
 )
 
 table1
@@ -64,8 +64,8 @@ table2.to_latex(
     column_format="p{0.7cm}p{0.7cm}p{0.7cm}p{0.8cm}p{0.8cm}p{0.8cm}p{0.8cm}p{0.8cm}p{0.8cm}p{0.8cm}p{0.8cm}p{0.8cm}",
     header=["$\\Sigma$", "SC", "LS", "ST", "NT", "NTD", "NTUS", "NB", "NBD"],
     escape=False,
-    caption=f"The average error in terms of spectral norm for different estimators, with alpha fixed at {alpha}. The measurement errors of the distance are generated from a Poisson distribution with parameter $\\lambda$. The first column is the spectral norm of the true covariance matrix $\\Sigma$. The following columns are the spectral norm of sample covariance estimator(SC), the linear shrinkage estimator (LS), the soft thresholding estimator (ST), the network tapering estimator (NT), the network tapering estimator with true distance matrix (NTD), the network tapering estimator with the undersmoothing correction (NTUS), the network banding estimator (NB), and the network banding estimator with the true distance matrix (NBD) ",
-    label=f"table:measurement_error_alpha_{alpha}",
+    caption=f"The average error in terms of spectral norm for different estimators, with alpha fixed at {alpha}. The measurement errors of the distance are generated from a {error_distribution} distribution with parameter $\\lambda$. The first column is the spectral norm of the true covariance matrix $\\Sigma$. The following columns are the spectral norm of sample covariance estimator(SC), the linear shrinkage estimator (LS), the soft thresholding estimator (ST), the network tapering estimator (NT), the network tapering estimator with true distance matrix (NTD), the network tapering estimator with the undersmoothing correction (NTUS), the network banding estimator (NB), and the network banding estimator with the true distance matrix (NBD) ",
+    label=f"table:measurement_error_alpha_{alpha}_{error_distribution}",
 )
 
 table2
@@ -87,8 +87,8 @@ table3.to_latex(
     column_format="p{0.7cm}p{0.7cm}p{0.7cm}p{0.8cm}p{0.8cm}p{0.8cm}p{0.8cm}p{0.8cm}p{0.8cm}p{0.8cm}p{0.8cm}p{0.8cm}",
     header=["$\\Sigma$", "SC", "LS", "ST", "NT", "NTD", "NTUS", "NB", "NBD"],
     escape=False,
-    caption=f"The average error in terms of spectral norm for different estimators, with alpha fixed at {alpha}. The measurement errors of the distance are generated from a Poisson distribution with parameter $\\lambda$. The first column is the spectral norm of the true covariance matrix $\\Sigma$. The following columns are the spectral norm of sample covariance estimator(SC), the linear shrinkage estimator (LS), the soft thresholding estimator (ST), the network tapering estimator (NT), the network tapering estimator with true distance matrix (NTD), the network tapering estimator with the undersmoothing correction (NTUS), the network banding estimator (NB), and the network banding estimator with the true distance matrix (NBD) ",
-    label=f"table:measurement_error_alpha_{alpha}",
+    caption=f"The average error in terms of spectral norm for different estimators, with alpha fixed at {alpha}. The measurement errors of the distance are generated from a {error_distribution} distribution with parameter $\\lambda$. The first column is the spectral norm of the true covariance matrix $\\Sigma$. The following columns are the spectral norm of sample covariance estimator(SC), the linear shrinkage estimator (LS), the soft thresholding estimator (ST), the network tapering estimator (NT), the network tapering estimator with true distance matrix (NTD), the network tapering estimator with the undersmoothing correction (NTUS), the network banding estimator (NB), and the network banding estimator with the true distance matrix (NBD) ",
+    label=f"table:measurement_error_alpha_{alpha}_{error_distribution}",
 )
 
 table3
@@ -110,8 +110,8 @@ table4.to_latex(
     column_format="p{0.7cm}p{0.7cm}p{0.7cm}p{0.8cm}p{0.8cm}p{0.8cm}p{0.8cm}p{0.8cm}p{0.8cm}p{0.8cm}p{0.8cm}p{0.8cm}",
     header=["$\\Sigma$", "SC", "LS", "ST", "NT", "NTD", "NTUS", "NB", "NBD"],
     escape=False,
-    caption=f"The average error in terms of spectral norm for different estimators, with alpha fixed at {alpha}. The measurement errors of the distance are generated from a Poisson distribution with parameter $\\lambda$. The first column is the spectral norm of the true covariance matrix $\\Sigma$. The following columns are the spectral norm of sample covariance estimator(SC), the linear shrinkage estimator (LS), the soft thresholding estimator (ST), the network tapering estimator (NT), the network tapering estimator with true distance matrix (NTD), the network tapering estimator with the undersmoothing correction (NTUS), the network banding estimator (NB), and the network banding estimator with the true distance matrix (NBD) ",
-    label=f"table:measurement_error_alpha_{alpha}",
+    caption=f"The average error in terms of spectral norm for different estimators, with alpha fixed at {alpha}. The measurement errors of the distance are generated from a {error_distribution} distribution with parameter $\\lambda$. The first column is the spectral norm of the true covariance matrix $\\Sigma$. The following columns are the spectral norm of sample covariance estimator(SC), the linear shrinkage estimator (LS), the soft thresholding estimator (ST), the network tapering estimator (NT), the network tapering estimator with true distance matrix (NTD), the network tapering estimator with the undersmoothing correction (NTUS), the network banding estimator (NB), and the network banding estimator with the true distance matrix (NBD) ",
+    label=f"table:measurement_error_alpha_{alpha}_{error_distribution}",
 )
 
 table4
@@ -154,5 +154,4 @@ ax.set_xticks(np.linspace(0.1, 1, 10))
 ax.legend(["SC", "NT", "NTD", "NTUS", "ST"], loc="center left", bbox_to_anchor=(1, 0.5))
 ax.set_xlabel("$\\alpha$")
 ax.set_ylabel("Estimation Error")
-plt.savefig(f"{output_folder}/varying_alpha_{error_distribution}.pdf")
-# %%
+plt.savefig(f"{output_folder}/varying_alpha_{error_distribution}.pdf", bbox_inches="tight")
