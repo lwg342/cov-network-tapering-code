@@ -78,6 +78,20 @@ def generate_poisson_discrete_measurement_error(p, lambd=1, seed=None):
     return symmetrize_using_upper_triangular(M)
 
 
+def generate_normal_discrete_measurement_error(p, mu=0, sigma=1, seed=None):
+    """
+    This function generates a matrix of size n*n with normal discrete random variables having a mean of 0.
+    :param n: An integer representing the size of the matrix.
+    :param mu: An optional float representing the mean value of the normal distribution. Default is 0.
+    :param sigma: An optional float representing the standard deviation of the normal distribution. Default is 1.
+    :param seed: An optional integer representing the random seed to use for generating the normal distribution.
+    :return: A matrix (2D array) of size n*n with normal discrete random variables having a mean of 0.
+    """
+    if seed is not None:
+        np.random.seed(seed)
+    M = np.round(np.random.normal(mu, sigma, size=(p, p))).astype(int)
+    return symmetrize_using_upper_triangular(M)
+
 def generate_rounded_t_measurement_error(p, df, seed=None):
     """
     Generate a p by p matrix of t-distributed random variables

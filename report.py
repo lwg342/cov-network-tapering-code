@@ -3,7 +3,13 @@ import pickle
 import pandas as pd
 import numpy as np
 
-file_list = ["p_100.pkl", "p_200.pkl", "p_500.pkl", "p_1000.pkl"]
+experiment_date = "2023-04-03"
+file_list = [
+    f"p_100_{experiment_date}.pkl",
+    f"p_200_{experiment_date}.pkl",
+    f"p_500_{experiment_date}.pkl",
+    f"p_1000_{experiment_date}.pkl",
+]
 load_items = {}
 for name in file_list:
     with open(f"{name}", "rb") as f:
@@ -107,17 +113,38 @@ table5.to_latex(
 
 table5
 # %%
-with open("varying_alpha.pkl", 'rb') as file:
+with open(f"varying_alpha_{experiment_date}.pkl", "rb") as file:
     result_alpha = pickle.load(file)
 result_alpha = result_alpha.reset_index()
-df_plot = result_alpha.loc[(result_alpha["p"] == 500) & (result_alpha["sample_size"] == 200)]
-df_plot = df_plot[["alpha", "Sample Covariance", "Network Tapering", "Network Tapering with True Distance Matrix", "Network Tapering Undersmoothing", "Soft Thresholding"]].set_index("alpha")
+df_plot = result_alpha.loc[(result_alpha["lambd"] == 100)]
+
+
+
+df_plot = df_plot[
+    [
+        "alpha",
+        "True Covariance",
+        "Sample Covariance",
+        "Network Tapering",
+        "Network Tapering with True Distance Matrix",
+        "Network Tapering Undersmoothing",
+        "Soft Thresholding",
+    ]
+].set_index("alpha")
+col_to_divide_by = 'True Covariance'
+df_plot.loc[:, df_plot.columns != col_to_divide_by] = df_plot.loc[:, df_plot.columns != col_to_divide_by].div(df_plot[col_to_divide_by], axis=0)
+df_plot.drop(col_to_divide_by, axis=1)
 
 import matplotlib.pyplot as plt
-ax = df_plot.plot()
+
+ax = df_plot[["Sample Covariance",
+        "Network Tapering",
+        "Network Tapering with True Distance Matrix",
+        "Network Tapering Undersmoothing",
+        "Soft Thresholding"]].plot()
 ax.set_xticks(np.linspace(0.1, 1, 10))
-ax.legend(["SC", "NT" ,"NTD" , "NTUS", "ST"], loc='center left', bbox_to_anchor=(1, 0.5))
+ax.legend(["SC", "NT", "NTD", "NTUS", "ST"], loc="center left", bbox_to_anchor=(1, 0.5))
 ax.set_xlabel("$\\alpha$")
-ax.set_ylabel("Error in terms of spectral norm")
+ax.set_ylabel("Estimation Error as a Fraction of the Spectral Norm of the True Covariance Matrix")
 
 # %%
