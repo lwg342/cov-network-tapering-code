@@ -1,5 +1,7 @@
 # ------ Tempelate starts ------#	
 # ignore .DS_Store and subfolders	
+cov-network-tapering-latex/
+
 *.pkl
 *.pdf
 *.html

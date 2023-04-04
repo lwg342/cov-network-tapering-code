@@ -7,6 +7,10 @@ from utils import *
 from wlpy.covariance import Covariance
 import time
 
+error_distribution = "gaussian"
+print("Current date:", error_distribution)
+# %%
+
 
 def generate_fixed_part(sample_size, p, alpha, lambd, bias, norm_type):
 
@@ -43,10 +47,16 @@ def generate_random_part(fixed_part, seed=None, **kwargs):
     distance_matrix = fixed_part["distance_matrix"]
 
     samples = generate_normal_samples(true_cov, sample_size, p, seed)
+    # measurement_error = (
+    #     1 * generate_poisson_discrete_measurement_error(p, lambd=lambd, seed=seed)
+    #     + bias
+    # )
     measurement_error = (
-        1 * generate_poisson_discrete_measurement_error(p, lambd=lambd, seed=seed)
+        1
+        * generate_normal_discrete_measurement_error(p, sigma=np.sqrt(lambd), seed=seed)
         + bias
     )
+
     observed_distance_matrix = distance_matrix + measurement_error
     cov_model = Covariance(samples)
     random_part = {
@@ -212,7 +222,7 @@ for p in p_list:
     result = pd.DataFrame(result).set_index(
         ["sample_size", "p", "alpha", "lambd", "bias", "norm_type"]
     )
-    with open(f"p_{p}.pkl", "wb") as file:
+    with open(f"p_{p}_{error_distribution}.pkl", "wb") as file:
         pickle.dump(result, file)
 
 print("Finished")
@@ -266,7 +276,7 @@ for alpha in alpha_list:
 result_varying_alpha = pd.DataFrame(result_varying_alpha).set_index(
     ["sample_size", "p", "alpha", "lambd", "bias", "norm_type"]
 )
-with open(f"varying_alpha.pkl", "wb") as file:
+with open(f"varying_alpha_{error_distribution}.pkl", "wb") as file:
     pickle.dump(result_varying_alpha, file)
 
 print("Finished")

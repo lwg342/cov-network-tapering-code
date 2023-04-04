@@ -4,7 +4,7 @@ import pandas as pd
 import numpy as np
 
 output_folder = "cov-network-tapering-latex"
-error_distribution = "gaussian"
+error_distribution = "poisson"
 
 file_list = [
     f"p_100_{error_distribution}.pkl",
