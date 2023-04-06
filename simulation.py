@@ -6,7 +6,7 @@ from utils import *
 from wlpy.covariance import Covariance
 import time
 
-error_distribution = "Gaussian"
+error_distribution = "Poisson"
 print("Measurement Error Distribution:", error_distribution)
 # %%
 

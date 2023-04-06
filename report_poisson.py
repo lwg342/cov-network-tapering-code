@@ -112,7 +112,7 @@ table4.to_latex(
     header=["$\\Sigma$", "SC", "LS", "ST", "NT", "NTD", "NTUS", "NB", "NBD"],
     escape=False,
     caption=f"The average error in terms of spectral norm for different estimators, with alpha fixed at {alpha}. The measurement errors of the distance are generated from a {error_distribution} distribution with parameter $\\lambda$. The first column is the spectral norm of the true covariance matrix $\\Sigma$. The following columns are the spectral norm of sample covariance estimator(SC), the linear shrinkage estimator (LS), the soft thresholding estimator (ST), the network tapering estimator (NT), the network tapering estimator with true distance matrix (NTD), the network tapering estimator with the undersmoothing correction (NTUS), the network banding estimator (NB), and the network banding estimator with the true distance matrix (NBD) ",
-    label=f"table:measurement_error_alpha_{alpha}",
+    label=f"table:measurement_error_alpha_{alpha}_{error_distribution}",
 )
 
 table4
@@ -155,7 +155,8 @@ ax.set_xticks(np.linspace(0.1, 1, 10))
 ax.legend(["SC", "NT", "NTD", "NTUS", "ST"], loc="center left", bbox_to_anchor=(1, 0.5))
 ax.set_xlabel("$\\alpha$")
 ax.set_ylabel("Estimation Error")
-plt.savefig(f"{output_folder}/varying_alpha_{error_distribution}.pdf", bbox_inches="tight")
-
+plt.savefig(
+    f"{output_folder}/varying_alpha_{error_distribution}.pdf", bbox_inches="tight"
+)
 
 # %%
