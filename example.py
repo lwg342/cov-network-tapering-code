@@ -37,6 +37,7 @@ sample_cov = cov_model.sample_cov()
 # %%
 tapering_bandwidth = get_bandwidth(n, p, "tapering", alpha)
 tapering_bandwidth_undersmooth = get_bandwidth(n, p, "tapering_undersmoothing", alpha)
+# tapering_bandwidth_undersmooth = 10*np.log(p)
 banding_bandwidth = get_bandwidth(n, p, "banding", alpha)
 
 taper_cov = cov_tapering(

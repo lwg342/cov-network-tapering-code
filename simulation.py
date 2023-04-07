@@ -166,7 +166,7 @@ nsim = 100
 sample_size_list = [100, 200, 500]
 p_list = [100, 200, 500, 1000]
 alpha_list = [0.1, 0.25, 0.5, 0.75, 1.0]
-lambd_list = [1e1, 1e2, 1e4]
+lambd_list = [1e1, 1e2, 1e3, 1e4]
 measurement_error_mean = [0.0]
 norm_list = [2]
 seed_list = [2 * j for j in range(nsim)]
@@ -247,7 +247,7 @@ print("Finished")
 p = 500
 sample_size = 200
 alpha_list = np.linspace(0.1, 1.0, 19)
-lambd_list = [1e1, 1e2, 1e4]
+lambd_list = [1e1, 1e2, 1e3, 1e4]
 seed_list = [2 * j for j in range(nsim)]
 
 result_varying_alpha = []

@@ -18,12 +18,11 @@ for name in file_list:
     with open(f"{name}", "rb") as f:
         load_items[name] = pickle.load(f)
 result = pd.concat([load_items[name].reset_index() for name in file_list], axis=0)
-result
-# %%
-# result["lambd"] = result["lambd"].astype(int)
-mapping = {10: "$\\mathbf{10^1}$", 100: "$\\mathbf{10^2}$", 10000: "$\\mathbf{10^4}$"}
+
+mapping = {10: "$\\mathbf{10^1}$", 100: "$\\mathbf{10^2}$", 1000: "$\\mathbf{10^3}$", 10000: "$\\mathbf{10^4}$"}
 result["lambd_sc"] = result["lambd"].map(mapping)
 
+result
 # %%
 lambd = 100
 table1 = (
@@ -154,4 +153,8 @@ ax.set_xticks(np.linspace(0.1, 1, 10))
 ax.legend(["SC", "NT", "NTD", "NTUS", "ST"], loc="center left", bbox_to_anchor=(1, 0.5))
 ax.set_xlabel("$\\alpha$")
 ax.set_ylabel("Estimation Error")
-plt.savefig(f"{output_folder}/varying_alpha_{error_distribution}.pdf", bbox_inches="tight")
+plt.savefig(
+    f"{output_folder}/varying_alpha_{error_distribution}.pdf", bbox_inches="tight"
+)
+
+# %%
