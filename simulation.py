@@ -14,7 +14,6 @@ print("Measurement Error Distribution:", error_distribution)
 def generate_fixed_part(
     sample_size, p, alpha, lambd, bias, norm_type, error_distribution
 ):
-
     index = np.arange(0, p, 1)
     distance_matrix = np.abs(np.subtract.outer(index, index))
 
