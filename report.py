@@ -158,6 +158,12 @@ ax.set_xticks(np.linspace(0.1, 1, 10))
 ax.legend(["SC", "NT", "NTD", "NTUS", "ST"], loc="center left", bbox_to_anchor=(1, 0.5))
 ax.set_xlabel("$\\alpha$")
 ax.set_ylabel("Estimation Error")
+<<<<<<< HEAD
 plt.savefig(
     f"{output_folder}/varying_alpha_{error_distribution}.pdf", bbox_inches="tight"
 )
+
+=======
+plt.savefig(f"{output_folder}/varying_alpha_{error_distribution}.pdf")
+>>>>>>> 738cc285f6fd24b7be95a1b29b6f15cd11fe9609
+# %%
