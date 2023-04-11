@@ -52,7 +52,7 @@ table1.to_latex(
 
 table1
 # %%
-alpha = 0.1
+alpha = 1.0
 
 table2 = (
     result.loc[result["alpha"] == alpha]
@@ -62,7 +62,7 @@ table2 = (
 )
 table2.index.names = ["$p$", "$n$", "$\\lambda$"]
 table2.to_latex(
-    f"{output_folder}/table_varying_lambda_alpha_0.1_{error_distribution}.tex",
+    f"{output_folder}/table_varying_lambda_alpha_{alpha}_{error_distribution}.tex",
     float_format="%.3f",
     bold_rows=True,
     longtable=True,

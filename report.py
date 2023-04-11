@@ -45,7 +45,7 @@ table1.to_latex(
     column_format="p{0.7cm}p{0.7cm}p{0.7cm}p{0.8cm}p{0.8cm}p{0.8cm}p{0.8cm}p{0.8cm}p{0.8cm}p{0.8cm}p{0.8cm}p{0.8cm}",
     header=["$\\Sigma$", "SC", "LS", "ST", "GT", "GTD", "GTOS", "GB", "GBD"],
     escape=False,
-    caption=f"The average error in terms of spectral norm for differeGT estimators, with the measurement errors generated from a {error_distribution} distribution with parameter $\\lambda = {lambd}$. The first column is the spectral norm of the true covariance matrix $\\Sigma$. The following columns are the spectral norm of sample covariance estimator(SC), the linear shrinkage estimator (LS), the soft thresholding estimator (ST), the generalised tapering estimator (GT), the generalised tapering estimator with true distance matrix (GTD), the generalised tapering estimator with the oversmoothing correction (GTOS), the generalised banding estimator (GB), and the generalised banding estimator with the true distance matrix (GBD) ",
+    caption=f"The average error in terms of spectral norm for different estimators, with the measurement errors generated from a {error_distribution} distribution with parameter $\\lambda = {lambd}$. The first column is the spectral norm of the true covariance matrix $\\Sigma$. The following columns are the spectral norm of sample covariance estimator(SC), the linear shrinkage estimator (LS), the soft thresholding estimator (ST), the generalised tapering estimator (GT), the generalised tapering estimator with true distance matrix (GTD), the generalised tapering estimator with the oversmoothing correction (GTOS), the generalised banding estimator (GB), and the generalised banding estimator with the true distance matrix (GBD) ",
     label=f"table:spectral_error_{error_distribution}",
 )
 
@@ -61,14 +61,14 @@ table2 = (
 )
 table2.index.names = ["$p$", "$n$", "$\\lambda$"]
 table2.to_latex(
-    f"{output_folder}/table_varying_lambda_alpha_0.1_{error_distribution}.tex",
+    f"{output_folder}/table_varying_lambda_alpha_{alpha}_{error_distribution}.tex",
     float_format="%.3f",
     bold_rows=True,
     longtable=True,
     column_format="p{0.7cm}p{0.7cm}p{0.7cm}p{0.8cm}p{0.8cm}p{0.8cm}p{0.8cm}p{0.8cm}p{0.8cm}p{0.8cm}p{0.8cm}p{0.8cm}",
     header=["$\\Sigma$", "SC", "LS", "ST", "GT", "GTD", "GTOS", "GB", "GBD"],
     escape=False,
-    caption=f"The average error in terms of spectral norm for differeGT estimators, with alpha fixed at {alpha}. The measurement errors of the distance are generated from a {error_distribution} distribution with parameter $\\lambda$. The first column is the spectral norm of the true covariance matrix $\\Sigma$. The following columns are the spectral norm of sample covariance estimator(SC), the linear shrinkage estimator (LS), the soft thresholding estimator (ST), the generalised tapering estimator (GT), the generalised tapering estimator with true distance matrix (GTD), the generalised tapering estimator with the oversmoothing correction (GTOS), the generalised banding estimator (GB), and the generalised banding estimator with the true distance matrix (GBD) ",
+    caption=f"The average error in terms of spectral norm for different estimators, with alpha fixed at {alpha}. The measurement errors of the distance are generated from a {error_distribution} distribution with parameter $\\lambda$. The first column is the spectral norm of the true covariance matrix $\\Sigma$. The following columns are the spectral norm of sample covariance estimator(SC), the linear shrinkage estimator (LS), the soft thresholding estimator (ST), the generalised tapering estimator (GT), the generalised tapering estimator with true distance matrix (GTD), the generalised tapering estimator with the oversmoothing correction (GTOS), the generalised banding estimator (GB), and the generalised banding estimator with the true distance matrix (GBD) ",
     label=f"table:measurement_error_alpha_{alpha}_{error_distribution}",
 )
 
@@ -91,7 +91,7 @@ table3.to_latex(
     column_format="p{0.7cm}p{0.7cm}p{0.7cm}p{0.8cm}p{0.8cm}p{0.8cm}p{0.8cm}p{0.8cm}p{0.8cm}p{0.8cm}p{0.8cm}p{0.8cm}",
     header=["$\\Sigma$", "SC", "LS", "ST", "GT", "GTD", "GTOS", "GB", "GBD"],
     escape=False,
-    caption=f"The average error in terms of spectral norm for differeGT estimators, with alpha fixed at {alpha}. The measurement errors of the distance are generated from a {error_distribution} distribution with parameter $\\lambda$. The first column is the spectral norm of the true covariance matrix $\\Sigma$. The following columns are the spectral norm of sample covariance estimator(SC), the linear shrinkage estimator (LS), the soft thresholding estimator (ST), the generalised tapering estimator (GT), the generalised tapering estimator with true distance matrix (GTD), the generalised tapering estimator with the oversmoothing correction (GTOS), the generalised banding estimator (GB), and the generalised banding estimator with the true distance matrix (GBD) ",
+    caption=f"The average error in terms of spectral norm for different estimators, with alpha fixed at {alpha}. The measurement errors of the distance are generated from a {error_distribution} distribution with parameter $\\lambda$. The first column is the spectral norm of the true covariance matrix $\\Sigma$. The following columns are the spectral norm of sample covariance estimator(SC), the linear shrinkage estimator (LS), the soft thresholding estimator (ST), the generalised tapering estimator (GT), the generalised tapering estimator with true distance matrix (GTD), the generalised tapering estimator with the oversmoothing correction (GTOS), the generalised banding estimator (GB), and the generalised banding estimator with the true distance matrix (GBD) ",
     label=f"table:measurement_error_alpha_{alpha}_{error_distribution}",
 )
 
@@ -114,7 +114,7 @@ table4.to_latex(
     column_format="p{0.7cm}p{0.7cm}p{0.7cm}p{0.8cm}p{0.8cm}p{0.8cm}p{0.8cm}p{0.8cm}p{0.8cm}p{0.8cm}p{0.8cm}p{0.8cm}",
     header=["$\\Sigma$", "SC", "LS", "ST", "GT", "GTD", "GTOS", "GB", "GBD"],
     escape=False,
-    caption=f"The average error in terms of spectral norm for differeGT estimators, with alpha fixed at {alpha}. The measurement errors of the distance are generated from a {error_distribution} distribution with parameter $\\lambda$. The first column is the spectral norm of the true covariance matrix $\\Sigma$. The following columns are the spectral norm of sample covariance estimator(SC), the linear shrinkage estimator (LS), the soft thresholding estimator (ST), the generalised tapering estimator (GT), the generalised tapering estimator with true distance matrix (GTD), the generalised tapering estimator with the oversmoothing correction (GTOS), the generalised banding estimator (GB), and the generalised banding estimator with the true distance matrix (GBD) ",
+    caption=f"The average error in terms of spectral norm for different estimators, with alpha fixed at {alpha}. The measurement errors of the distance are generated from a {error_distribution} distribution with parameter $\\lambda$. The first column is the spectral norm of the true covariance matrix $\\Sigma$. The following columns are the spectral norm of sample covariance estimator(SC), the linear shrinkage estimator (LS), the soft thresholding estimator (ST), the generalised tapering estimator (GT), the generalised tapering estimator with true distance matrix (GTD), the generalised tapering estimator with the oversmoothing correction (GTOS), the generalised banding estimator (GB), and the generalised banding estimator with the true distance matrix (GBD) ",
     label=f"table:measurement_error_alpha_{alpha}_{error_distribution}",
 )
 
