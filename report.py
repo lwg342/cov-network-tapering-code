@@ -6,6 +6,7 @@ import matplotlib.pyplot as plt
 
 output_folder = "cov-network-tapering-latex"
 error_distribution = "Gaussian"
+# error_distribution = "Poisson"
 
 file_list = [
     f"p_100_{error_distribution}.pkl",
@@ -45,80 +46,40 @@ table1.to_latex(
     column_format="p{0.7cm}p{0.7cm}p{0.7cm}p{0.8cm}p{0.8cm}p{0.8cm}p{0.8cm}p{0.8cm}p{0.8cm}p{0.8cm}p{0.8cm}p{0.8cm}",
     header=["$\\Sigma$", "SC", "LS", "ST", "GT", "GTD", "GTOS", "GB", "GBD"],
     escape=False,
-    caption=f"The average error in terms of spectral norm for different estimators, with the measurement errors generated from a {error_distribution} distribution with parameter $\\lambda = {lambd}$. The first column is the spectral norm of the true covariance matrix $\\Sigma$. The following columns are the spectral norm of sample covariance estimator(SC), the linear shrinkage estimator (LS), the soft thresholding estimator (ST), the generalised tapering estimator (GT), the generalised tapering estimator with true distance matrix (GTD), the generalised tapering estimator with the oversmoothing correction (GTOS), the generalised banding estimator (GB), and the generalised banding estimator with the true distance matrix (GBD) ",
+    caption=(
+        f"\\small The spectral norm of $\\Sigma$ and average estimation errors in spectral norm for different estimators sample covariance estimator(SC), the linear shrinkage estimator (LS), the soft thresholding estimator (ST), the generalised tapering estimator (GT), the generalised tapering estimator with true distance matrix (GTD), the generalised tapering estimator with the oversmoothing correction (GTOS), the generalised banding estimator (GB), and the generalised banding estimator with the true distance matrix (GBD). The measurement errors are generated from a {error_distribution} distribution with parameter $\\lambda= {lambd}$.",
+        f"Estimation errors with {error_distribution} measurement errors and varying $\\alpha$",
+    ),
     label=f"table:spectral_error_{error_distribution}",
 )
 
 table1
 # %%
-alpha = 0.1
-
-table2 = (
-    result.loc[result["alpha"] == alpha]
-    .set_index(["p", "sample_size", "lambd_sc"])
-    .sort_index()
-    .drop(["alpha", "bias", "norm_type", "lambd"], axis=1)
-)
-table2.index.names = ["$p$", "$n$", "$\\lambda$"]
-table2.to_latex(
-    f"{output_folder}/table_varying_lambda_alpha_{alpha}_{error_distribution}.tex",
-    float_format="%.3f",
-    bold_rows=True,
-    longtable=True,
-    column_format="p{0.7cm}p{0.7cm}p{0.7cm}p{0.8cm}p{0.8cm}p{0.8cm}p{0.8cm}p{0.8cm}p{0.8cm}p{0.8cm}p{0.8cm}p{0.8cm}",
-    header=["$\\Sigma$", "SC", "LS", "ST", "GT", "GTD", "GTOS", "GB", "GBD"],
-    escape=False,
-    caption=f"The average error in terms of spectral norm for different estimators, with alpha fixed at {alpha}. The measurement errors of the distance are generated from a {error_distribution} distribution with parameter $\\lambda$. The first column is the spectral norm of the true covariance matrix $\\Sigma$. The following columns are the spectral norm of sample covariance estimator(SC), the linear shrinkage estimator (LS), the soft thresholding estimator (ST), the generalised tapering estimator (GT), the generalised tapering estimator with true distance matrix (GTD), the generalised tapering estimator with the oversmoothing correction (GTOS), the generalised banding estimator (GB), and the generalised banding estimator with the true distance matrix (GBD) ",
-    label=f"table:measurement_error_alpha_{alpha}_{error_distribution}",
-)
+for alpha in [0.1, 0.25, 0.5, 0.75, 1.0]:
+    table2 = (
+        result.loc[result["alpha"] == alpha]
+        .set_index(["p", "sample_size", "lambd_sc"])
+        .sort_index()
+        .drop(["alpha", "bias", "norm_type", "lambd"], axis=1)
+    )
+    table2.index.names = ["$p$", "$n$", "$\\lambda$"]
+    table2.to_latex(
+        f"{output_folder}/table_varying_lambda_alpha_{alpha}_{error_distribution}.tex",
+        float_format="%.3f",
+        bold_rows=True,
+        longtable=True,
+        column_format="p{0.7cm}p{0.7cm}p{0.7cm}p{0.8cm}p{0.8cm}p{0.8cm}p{0.8cm}p{0.8cm}p{0.8cm}p{0.8cm}p{0.8cm}p{0.8cm}",
+        header=["$\\Sigma$", "SC", "LS", "ST", "GT", "GTD", "GTOS", "GB", "GBD"],
+        escape=False,
+        caption=(
+            f"\\small The spectral norm of $\\Sigma$ and average estimation errors in spectral norm for different estimators sample covariance estimator(SC), the linear shrinkage estimator (LS), the soft thresholding estimator (ST), the generalised tapering estimator (GT), the generalised tapering estimator with true distance matrix (GTD), the generalised tapering estimator with the oversmoothing correction (GTOS), the generalised banding estimator (GB), and the generalised banding estimator with the true distance matrix (GBD) , with alpha fixed at {alpha}. The measurement errors are generated from a {error_distribution} distribution with parameter $\\lambda$.",
+            f"Estimation errors with {error_distribution} measurement errors with $\\alpha={alpha}$.",
+        ),
+        label=f"table:measurement_error_alpha_{alpha}_{error_distribution}",
+    )
 
 table2
-# %%
-alpha = 0.5
 
-table3 = (
-    result.loc[result["alpha"] == alpha]
-    .set_index(["p", "sample_size", "lambd_sc"])
-    .sort_index()
-    .drop(["alpha", "bias", "norm_type", "lambd"], axis=1)
-)
-table3.index.names = ["$p$", "$n$", "$\\lambda$"]
-table3.to_latex(
-    f"{output_folder}/table_varying_lambda_alpha_{alpha}_{error_distribution}.tex",
-    float_format="%.3f",
-    bold_rows=True,
-    longtable=True,
-    column_format="p{0.7cm}p{0.7cm}p{0.7cm}p{0.8cm}p{0.8cm}p{0.8cm}p{0.8cm}p{0.8cm}p{0.8cm}p{0.8cm}p{0.8cm}p{0.8cm}",
-    header=["$\\Sigma$", "SC", "LS", "ST", "GT", "GTD", "GTOS", "GB", "GBD"],
-    escape=False,
-    caption=f"The average error in terms of spectral norm for different estimators, with alpha fixed at {alpha}. The measurement errors of the distance are generated from a {error_distribution} distribution with parameter $\\lambda$. The first column is the spectral norm of the true covariance matrix $\\Sigma$. The following columns are the spectral norm of sample covariance estimator(SC), the linear shrinkage estimator (LS), the soft thresholding estimator (ST), the generalised tapering estimator (GT), the generalised tapering estimator with true distance matrix (GTD), the generalised tapering estimator with the oversmoothing correction (GTOS), the generalised banding estimator (GB), and the generalised banding estimator with the true distance matrix (GBD) ",
-    label=f"table:measurement_error_alpha_{alpha}_{error_distribution}",
-)
-
-table3
-# %%
-alpha = 1.0
-
-table4 = (
-    result.loc[result["alpha"] == alpha]
-    .set_index(["p", "sample_size", "lambd_sc"])
-    .sort_index()
-    .drop(["alpha", "bias", "norm_type", "lambd"], axis=1)
-)
-table4.index.names = ["$p$", "$n$", "$\\lambda$"]
-table4.to_latex(
-    f"{output_folder}/table_varying_lambda_alpha_{alpha}_{error_distribution}.tex",
-    float_format="%.3f",
-    bold_rows=True,
-    longtable=True,
-    column_format="p{0.7cm}p{0.7cm}p{0.7cm}p{0.8cm}p{0.8cm}p{0.8cm}p{0.8cm}p{0.8cm}p{0.8cm}p{0.8cm}p{0.8cm}p{0.8cm}",
-    header=["$\\Sigma$", "SC", "LS", "ST", "GT", "GTD", "GTOS", "GB", "GBD"],
-    escape=False,
-    caption=f"The average error in terms of spectral norm for different estimators, with alpha fixed at {alpha}. The measurement errors of the distance are generated from a {error_distribution} distribution with parameter $\\lambda$. The first column is the spectral norm of the true covariance matrix $\\Sigma$. The following columns are the spectral norm of sample covariance estimator(SC), the linear shrinkage estimator (LS), the soft thresholding estimator (ST), the generalised tapering estimator (GT), the generalised tapering estimator with true distance matrix (GTD), the generalised tapering estimator with the oversmoothing correction (GTOS), the generalised banding estimator (GB), and the generalised banding estimator with the true distance matrix (GBD) ",
-    label=f"table:measurement_error_alpha_{alpha}_{error_distribution}",
-)
-
-table4
 # %%
 with open(f"varying_alpha_{error_distribution}.pkl", "rb") as file:
     result_alpha = pickle.load(file)
@@ -155,7 +116,7 @@ ax = df_plot[
     ]
 ].plot()
 ax.set_xticks(np.linspace(0.1, 1, 10))
-ax.legend(["SC", "GT", "GTD", "GTOS", "ST"], loc="center left", bbox_to_anchor=(1, 0.5))
+ax.legend(["SC", "GT", "GTD", "GTOS", "ST"], loc="center right")
 ax.set_xlabel("$\\alpha$")
 ax.set_ylabel("Estimation Error")
 plt.savefig(
