@@ -36,8 +36,8 @@ sample_cov = cov_model.sample_cov()
 
 # %%
 tapering_bandwidth = get_bandwidth(n, p, "tapering", alpha)
-tapering_bandwidth_undersmooth = get_bandwidth(n, p, "tapering_undersmoothing", alpha)
-# tapering_bandwidth_undersmooth = 10*np.log(p)
+tapering_bandwidth_oversmooth = get_bandwidth(n, p, "tapering_oversmoothing", alpha)
+# tapering_bandwidth_oversmooth = 10*np.log(p)
 banding_bandwidth = get_bandwidth(n, p, "banding", alpha)
 
 taper_cov = cov_tapering(
@@ -49,7 +49,7 @@ banding_cov = cov_tapering(
 
 
 print(
-    f"Tapering Bandwidth: {tapering_bandwidth}\nBanding Bandwidth: {banding_bandwidth}\nTaperingBandwidth Undersmooth: {tapering_bandwidth_undersmooth}"
+    f"Tapering Bandwidth: {tapering_bandwidth}\nBanding Bandwidth: {banding_bandwidth}\nTaperingBandwidth oversmooth: {tapering_bandwidth_oversmooth}"
 )
 
 estimators = {
@@ -61,10 +61,10 @@ estimators = {
     "Linear Shrinkage": cov_model.linear_shrinkage(),
     # "Nonlinear Shrinkage": cov_model.nonlin_shrink(),
     "Network Tapering": taper_cov,
-    "Network Tapering Undersmoothing": cov_tapering(
+    "Network Tapering oversmoothing": cov_tapering(
         sample_cov,
         observed_distance_matrix,
-        bandwidth=tapering_bandwidth_undersmooth,
+        bandwidth=tapering_bandwidth_oversmooth,
         method="linear",
     ),
     "Network Tapering Corrected": correct_eigenvalues(taper_cov),
@@ -74,13 +74,13 @@ estimators = {
     "Network Tapering with True Distance": cov_tapering(
         sample_cov, distance_matrix, bandwidth=tapering_bandwidth, method="linear"
     ),
-    "Network Tapering with True Distance Undersmoothing": cov_tapering(
+    "Network Tapering with True Distance oversmoothing": cov_tapering(
         sample_cov,
         distance_matrix,
-        bandwidth=tapering_bandwidth_undersmooth,
+        bandwidth=tapering_bandwidth_oversmooth,
         method="linear",
     ),
-    "Network Tapering Undersmoothing Alt": cov_tapering(
+    "Network Tapering oversmoothing Alt": cov_tapering(
         sample_cov,
         observed_distance_matrix,
         bandwidth=np.floor((n / np.log(p)) ** 0.5),
@@ -168,7 +168,7 @@ def get_covariance_estimators(
     distance_matrix,
     true_cov,
     tapering_bandwidth,
-    tapering_bandwidth_undersmooth,
+    tapering_bandwidth_oversmooth,
     banding_bandwidth,
     samples,
     observed_distance_matrix,
@@ -196,10 +196,10 @@ def get_covariance_estimators(
         "Network Banding": banding_cov,
         "Linear Shrinkage": cov_model.linear_shrinkage(),
         "Network Tapering": taper_cov,
-        "Network Tapering Undersmoothing": cov_tapering(
+        "Network Tapering oversmoothing": cov_tapering(
             sample_cov,
             observed_distance_matrix,
-            bandwidth=tapering_bandwidth_undersmooth,
+            bandwidth=tapering_bandwidth_oversmooth,
             method="linear",
         ),
         "Oracle Network Banding": cov_tapering(
@@ -208,7 +208,7 @@ def get_covariance_estimators(
         "Oracle Network Tapering": cov_tapering(
             sample_cov, distance_matrix, bandwidth=tapering_bandwidth, method="linear"
         ),
-        # "Oracle Network Tapering Undersmoothing": cov_tapering(sample_cov, distance_matrix, bandwidth=tapering_bandwidth_undersmooth, method="linear"),
+        # "Oracle Network Tapering oversmoothing": cov_tapering(sample_cov, distance_matrix, bandwidth=tapering_bandwidth_oversmooth, method="linear"),
     }
 
     col_name = [
@@ -263,8 +263,8 @@ for p in p_list:
     for alpha in alpha_list:
         true_cov = generate_true_cov_cai2010(distance_matrix, rho, alpha)
         tapering_bandwidth = get_bandwidth(n, p, "tapering", alpha)
-        tapering_bandwidth_undersmooth = get_bandwidth(
-            n, p, "tapering_undersmoothing", alpha
+        tapering_bandwidth_oversmooth = get_bandwidth(
+            n, p, "tapering_oversmoothing", alpha
         )
         banding_bandwidth = get_bandwidth(n, p, "banding", alpha)
 
@@ -291,7 +291,7 @@ for p in p_list:
                             distance_matrix,
                             true_cov,
                             tapering_bandwidth,
-                            tapering_bandwidth_undersmooth,
+                            tapering_bandwidth_oversmooth,
                             banding_bandwidth,
                             samples,
                             observed_distance_matrix,

@@ -12,7 +12,7 @@ def get_bandwidth(sample_size, p, method, alpha):
         return np.floor(sample_size ** (1 / (2 * alpha + 1)))
     elif method == "banding":
         return np.floor((sample_size / np.log(p)) ** (1 / (2 * alpha + 2)))
-    elif method == "tapering_undersmoothing":
+    elif method == "tapering_oversmoothing":
         return np.floor(sample_size ** (1 / 2))
     else:
         raise ValueError("Method must be either tapering or banding")

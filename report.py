@@ -94,7 +94,7 @@ df_plot = df_plot[
         "Sample Covariance",
         "Network Tapering",
         "Network Tapering with True Distance Matrix",
-        "Network Tapering Undersmoothing",
+        "Network Tapering oversmoothing",
         "Soft Thresholding",
     ]
 ].set_index("alpha")
@@ -111,7 +111,7 @@ ax = df_plot[
         "Sample Covariance",
         "Network Tapering",
         "Network Tapering with True Distance Matrix",
-        "Network Tapering Undersmoothing",
+        "Network Tapering oversmoothing",
         "Soft Thresholding",
     ]
 ].plot()
@@ -122,5 +122,3 @@ ax.set_ylabel("Estimation Error")
 plt.savefig(
     f"{output_folder}/varying_alpha_{error_distribution}.pdf", bbox_inches="tight"
 )
-
-# %%

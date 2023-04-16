@@ -20,8 +20,8 @@ def generate_fixed_part(
     true_cov = generate_true_cov_cai2010(distance_matrix, rho, alpha)
     tapering_bandwidth = get_bandwidth(sample_size, p, "tapering", alpha)
     banding_bandwidth = get_bandwidth(sample_size, p, "banding", alpha)
-    tapering_bandwidth_undersmooth = get_bandwidth(
-        sample_size, p, "tapering_undersmoothing", alpha
+    tapering_bandwidth_oversmooth = get_bandwidth(
+        sample_size, p, "tapering_oversmoothing", alpha
     )
     fixed_part = {
         "sample_size": sample_size,
@@ -32,7 +32,7 @@ def generate_fixed_part(
         "true_cov": true_cov,
         "distance_matrix": distance_matrix,
         "tapering_bandwidth": tapering_bandwidth,
-        "tapering_bandwidth_undersmooth": tapering_bandwidth_undersmooth,
+        "tapering_bandwidth_oversmooth": tapering_bandwidth_oversmooth,
         "banding_bandwidth": banding_bandwidth,
         "norm_type": norm_type,
         "error_distribution": error_distribution,
@@ -124,13 +124,13 @@ def compute_average_loss(
                 true_cov - random_part["network_tapering_true_distance_matrix"],
                 norm_type,
             ),
-            # Network Tapering Undersmoothing
+            # Network Tapering oversmoothing
             LA.norm(
                 true_cov
                 - cov_tapering(
                     random_part["cov_model"].sample_cov_estimate,
                     random_part["observed_distance_matrix"],
-                    bandwidth=fixed_part["tapering_bandwidth_undersmooth"],
+                    bandwidth=fixed_part["tapering_bandwidth_oversmooth"],
                     method="linear",
                     **random_part,
                 ),
@@ -176,7 +176,7 @@ estimator_list = [
     "Soft Thresholding",
     "Network Tapering",
     "Network Tapering with True Distance Matrix",
-    "Network Tapering Undersmoothing",
+    "Network Tapering oversmoothing",
     "Network Banding",
     "Network Banding with True Distance Matrix",
 ]
